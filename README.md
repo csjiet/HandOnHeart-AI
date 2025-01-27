@@ -64,45 +64,58 @@ Next, data signatures across temporal frames enable the exploration of hand moti
 
 Building on the features that capture spatial and temporal movement patterns, we take an initial simple and intuitive approach to stroke detection. Using the geometric information obtained in Step 1, we can develop proxy metrics to quantify the movement expressiveness of stroke and non-stroke patients. One such intuitive metric is the L2 norm of each hand landmark across frames, which quantifies the magnitude of motion between consecutive frames.
 
-#### The "Motion Expressiveness" Score, $\text{ExprScore}$
-$\text{Assume a steady frame from the video feed}$
+### The "Motion Expressiveness" Score, $(\text{ExprScore})$
+$\textbf{Assume a steady frame from the video feed}$
 
-Let $V \in \mathbb{R}^{T \times H \times W \times C}$ denote the video feed, where $T$ is the number of sliced frames.
+$\text{Let } V \in \mathbb{R}^{T \times H \times W \times C} \text{ denote the video feed, where } T \text{ is the number of sliced frames, and}$
 
-$\text{Let } V[t] \in \mathbb{R}^{H \times W \times C} \text{be an image frame of an t-th frame derived from a video feed.}$
+$\quad \text{let } V[t] \in \mathbb{R}^{H \times W \times C} \text{ be an image frame of an }t\text{-th frame derived from a video feed, and}$
 
-$\text{Let } h \text{ be the the } \textbf{"mediapipe"} \text{ model that outputs a tuple of hand landmarks for a given frame } V[t]$.
+$\quad \text{let } h \text{ be the the } \textbf{"mediapipe"} \text{ model that outputs a tuple of hand landmarks for a given frame } V[t]$.
 
 $\text{Specifically, }$ 
+
 $$
-\begin{align*}
-&h(V[t]) = ((x_1, y_1), (x_2, y_2), \dots, (x_{21x2}, y_{21x2})) \\
-&\text{where $i$ represents a hand landmark,}\\
-&\text{with a total of 21 landmarks per hand ($\times$ 2 if both hands are in frame)}\\
-&\text{(e.g., landmark 0 corresponds to the "left wrist").}
-\end{align*}
+h(V[t]) = ((x_1, y_1), (x_2, y_2), \dots, (x_{21x2}, y_{21x2}))
 $$
 
+$\text{where } i \text{ represents a hand landmark,} \text{ with a total of 21 landmarks per hand ( } \times \text{ 2 if both hands are in frame)}$
 
-$\text{Assume both hands are in frame}$
+$\text{(e.g., landmark 0 corresponds to the "left wrist").}$
+
+</br>
+
+$\textbf{Assume both hands are in frame}$
 
 $\text{Let } N \text{ be the total number of frames in a video feed.}$
 
-***"Average Movement Deviation"*** $m(\delta)$
+#### "Average Movement Deviation" $m(\delta)$
 
 $\text{We compute the arithmetic mean of the L2 norms for each hand landmark across all consecutive frames.}$
 
+
+$\text{Let } i \text{ be the index to the Cartesian coordinates of a specific hand landmark, and}$
+
+$\quad \tilde{\delta}_{i} \text{ be a random variable representing the deviation of the } i\text{-th hand landmark.}$
+
 $$
-\begin{align*}
-&\text{Let } i \text{ index the Cartesian coordinates of a specific hand landmark.} \\\\
-&\text{Let } \tilde{\delta}_i \text{ be a random variable representing the deviation of the $i$-th hand landmark.} \\\\
-&m(\tilde{\delta_i}) = \frac{\sum_{t=1}^{N-1} \| h(V[t])[i] - h(V[t+1])[i] \|_2}{N-1}, \quad \forall i \quad (N-1 \text{ because of consecutive frame intervals})\\\\
-&\text{This computation yields a tuple of mean deviations for each hand landmark:} \\\\
-&(m(\tilde{\delta}_1), m(\tilde{\delta}_2), \dots, m(\tilde{\delta}_{21 \times 2})). \\\\
-&\text{Then, we can define the final expression score as:} \\\\
-&\text{ExprScore} = \sum_{i=1}^{21 \times 2} m(\tilde{\delta}_i).
-\end{align*}
+m(\tilde{\delta_{i}}) = \frac{\sum_{t=1}^{N-1} \lVert h(V[t])[i] - h(V[t+1])[i] \rVert_{2}}{N-1}, \quad \forall i
 $$
+
+$(N-1 \text{ because of consecutive frame intervals})$
+
+$\text{This computation yields a tuple of mean deviations for each hand landmark:}$
+
+$$
+(m(\tilde{\delta}_1), m(\tilde{\delta}_2), \dots , m(\tilde{\delta}_n)) \text{ where } n = 21 \times 2
+$$
+
+$\text{Then, we can define the final expression score as:}$
+
+$$
+\text{ExprScore} = \sum_{i=1}^{21 \times 2} m(\tilde{\delta}_i).
+$$
+
 
 This concludes our simplistic scoring method.
 
