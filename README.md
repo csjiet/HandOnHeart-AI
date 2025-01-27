@@ -60,7 +60,7 @@ Next, data signatures across temporal frames enable the exploration of hand moti
 
 ### Step 4: Stroke Detection (a simplistic approach)
 
-> A heuristic of motion expressiveness: Stroke patients often exhibit limited mobility and slower hand movements due to neurological damage as seen from an example video. By calculating the L2 norm of each hand landmark across frames, we aim to capture this difference we can capture the "expressiveness" of movement in a quantifiable manner.
+> A heuristic of motion expressiveness: Stroke patients often exhibit limited mobility and slower hand movements due to neurological damage as seen from an example video. By calculating the L2 norm of each hand landmark across frames, we can capture the "expressiveness" of movement in a quantifiable manner.
 
 Building on the features that capture spatial and temporal movement patterns, we take an initial simple and intuitive approach to stroke detection. Using the geometric information obtained in Step 1, we can develop proxy metrics to quantify the movement expressiveness of stroke and non-stroke patients. One such intuitive metric is the L2 norm of each hand landmark across frames, which quantifies the magnitude of motion between consecutive frames.
 
