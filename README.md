@@ -97,7 +97,7 @@ $\text{Let } i \text{ be the index to the Cartesian coordinates of a specific ha
 
 $\quad \text{(e.g., Landmark 0 }, h(V[t])[0] \text{ corresponds to the "left wrist" at video frame, } t \text{), and}$
 
-$\quad \tilde{\delta}_{i} \text{ be a random variable representing the deviation of the } i\text{-th hand landmark.}$
+$\quad \tilde{\delta}_{i} \text{ be a random variable representing the deviation of the } i\text{-th hand landmark across successive frames.}$
 
 $$
 m(\tilde{\delta_{i}}) = \frac{\sum_{t=1}^{N-1} \lVert h(V[t])[i] - h(V[t+1])[i] \rVert_{2}}{N-1}, \quad \forall i
