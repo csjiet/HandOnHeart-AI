@@ -36,21 +36,27 @@ We begin with **hand detection**. Using Mediapipe's hand-tracking library, we ca
 </div>
 
 
-[Notebook here](./non-stroke-hand-segmentation.ipynb)
+- [Notebook here: Non-stroke patient](./non-stroke-hand-segmentation.ipynb)
+- [Notebook here: Stroke patient](./stroke-hand-segmentation.ipynb)
 
+---
 
 ### Step 2: Motion Heatmaps
 
 Leveraging these outputs across sliced frames, we obtain a sequence of observed data over space. This sequence can be analyzed statistically by examining the **frequency of hand positions in space**. This method employs a Gaussian Kernel Density Estimation (KDE) to derive hand motion heatmaps, providing a rough visualization of the intensity and spread of movement. These heatmaps are valuable for identifying spatial patterns of motion and areas of high activity.
 
 
-[Notebook here](./heatmap.ipynb)
+- [Notebook here: Heatmaps](./heatmap.ipynb)
+
+---
 
 ### Step 3: Trajectory Tracking
 
 Next, data signatures across temporal frames enable the exploration of hand motion trajectories, which map the **movement path of the hand over time**. By visualizing these trajectories and analyzing their geometric patterns and complexity, we can potentially infer a patient's condition, uncovering patterns that distinguish the motions of non-stroke patients from stroke patients, which can be more limited.
 
-[Notebook here](./motion_tracker.ipynb)
+[Notebook here: Trajectory tracker](./motion_tracker.ipynb)
+
+---
 
 ### Step 4: Stroke Detection (a simplistic approach)
 
@@ -58,9 +64,57 @@ Next, data signatures across temporal frames enable the exploration of hand moti
 
 Building on the features that capture spatial and temporal movement patterns, we take an initial simple and intuitive approach to stroke detection. Using the geometric information obtained in Step 1, we can develop proxy metrics to quantify the movement expressiveness of stroke and non-stroke patients. One such intuitive metric is the L2 norm of each hand landmark across frames, which quantifies the magnitude of motion between consecutive frames.
 
-[Notebook here](./stroke_heuristic.ipynb)
+#### The "Motion Expressiveness" Score, $\text{ExprScore}$
+$\text{Assume a steady frame from the video feed}$
 
-(**Futurework**): With more data, these relative scores can be studied using unsupervised learning techniques, such as clustering. This approach can help us track progress of healthy vs non-healthy patients and provides us a means to monitor rehabilitation progress for individuals with mobility issues. 
+Let $V \in \mathbb{R}^{T \times H \times W \times C}$ denote the video feed, where $T$ is the number of sliced frames.
+
+$\text{Let } V[t] \in \mathbb{R}^{H \times W \times C} \text{be an image frame of an t-th frame derived from a video feed.}$
+
+$\text{Let } h \text{ be the the } \textbf{"mediapipe"} \text{ model that outputs a tuple of hand landmarks for a given frame } V[t]$.
+
+$\text{Specifically, }$ 
+$$
+\begin{align*}
+&h(V[t]) = ((x_1, y_1), (x_2, y_2), \dots, (x_{21x2}, y_{21x2})) \\
+&\text{where $i$ represents a hand landmark,}\\
+&\text{with a total of 21 landmarks per hand ($\times$ 2 if both hands are in frame)}\\
+&\text{(e.g., landmark 0 corresponds to the "left wrist").}
+\end{align*}
+$$
+
+
+$\text{Assume both hands are in frame}$
+
+$\text{Let } N \text{ be the total number of frames in a video feed.}$
+
+***"Average Movement Deviation"*** $m(\delta)$
+
+$\text{We compute the arithmetic mean of the L2 norms for each hand landmark across all consecutive frames.}$
+
+$$
+\begin{align*}
+&\text{Let } i \text{ index the Cartesian coordinates of a specific hand landmark.} \\\\
+&\text{Let } \tilde{\delta}_i \text{ be a random variable representing the deviation of the $i$-th hand landmark.} \\\\
+&m(\tilde{\delta_i}) = \frac{\sum_{t=1}^{N-1} \| h(V[t])[i] - h(V[t+1])[i] \|_2}{N-1}, \quad \forall i \quad (N-1 \text{ because of consecutive frame intervals})\\\\
+&\text{This computation yields a tuple of mean deviations for each hand landmark:} \\\\
+&(m(\tilde{\delta}_1), m(\tilde{\delta}_2), \dots, m(\tilde{\delta}_{21 \times 2})). \\\\
+&\text{Then, we can define the final expression score as:} \\\\
+&\text{ExprScore} = \sum_{i=1}^{21 \times 2} m(\tilde{\delta}_i).
+\end{align*}
+$$
+
+This concludes our simplistic scoring method.
+
+
+- [Notebook here: a simple heuristic measure](./stroke_heuristic.ipynb)
+
+---
+
+(**Futurework**): 
+1. With more data, these relative scores can be studied using unsupervised learning techniques, such as clustering to identify patterns and group patients based on their movement characteristics. This approach could enable us to track the progress of healthy vs non-healthy individuals and provide a quantitative means for monitoring rehabilitation progress in patients with hand mobility issues.
+2. We can introduce the z-depth of hand landmarks to capture additional spatial information. 
+3. Hand landmark features can be trained as a binary classification problem --- stroke vs non-stroke --- using deep learning models. 
 
 
 
