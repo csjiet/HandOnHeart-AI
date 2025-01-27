@@ -79,9 +79,8 @@ $$
 h(V[t]) = ((x_1, y_1), (x_2, y_2), \dots, (x_{21x2}, y_{21x2}))
 $$
 
-$\text{where } i \text{ represents a hand landmark,} \text{ with a total of 21 landmarks per hand ( } \times \text{ 2 if both hands are in frame)}$
+$\text{Here we see a total of 21 } \times \text{2 coordinates, derived from a total of 21 landmarks per hand ( } \times \text{ 2 if both hands are in frame)}$
 
-$\text{(e.g., landmark 0 corresponds to the "left wrist").}$
 
 </br>
 
@@ -94,7 +93,9 @@ $\text{Let } N \text{ be the total number of frames in a video feed.}$
 $\text{We compute the arithmetic mean of the L2 norms for each hand landmark across all consecutive frames.}$
 
 
-$\text{Let } i \text{ be the index to the Cartesian coordinates of a specific hand landmark, and}$
+$\text{Let } i \text{ be the index to the Cartesian coordinates of a specific hand landmark}$
+
+$\quad \text{(e.g., Landmark 0 }, h(V[t])[0] \text{ corresponds to the "left wrist" at video frame, } t \text{), and}$
 
 $\quad \tilde{\delta}_{i} \text{ be a random variable representing the deviation of the } i\text{-th hand landmark.}$
 
