@@ -12,7 +12,7 @@ The project is organized into several stages:
 3. **Trajectory Tracking**: Tracking the path of the hand over time.
 4. **Stroke Detection**: A naive attempt at detecting stroke through proxy metrics for movement expressiveness, such as calculating the L2 norm of hand motion across frames.
 
-This work leverages spatial and temporal data signatures from video feeds to analyze a patient's "movement expressiveness." This is based on the fundamental observation that mobility and speed are often significantly limited in stroke patients.
+**TLDR**: This work leverages spatial and temporal data signatures from video feeds to analyze a patient's "movement expressiveness". This is based on the fundamental observation that mobility and speed are often significantly limited in stroke patients.
 
 ---
 
