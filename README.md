@@ -163,8 +163,8 @@ conda activate sam2
 pip install -r requirements.txt
 ```
 
-4. Run the main script to analyze hand movements:
+4. Import the hand_tracker module:
 ```bash
-python hand_tracker.py 
+import hand_tracker as ht
 ```
 
