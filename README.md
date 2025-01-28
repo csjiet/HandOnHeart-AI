@@ -1,4 +1,4 @@
-# Stroke Detection Model
+# Stroke Analysis and Detection Model
 
 ## Overview
 
