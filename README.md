@@ -126,7 +126,7 @@ This concludes our simplistic scoring method.
 ---
 
 (**Futurework**): 
-1. With more data, these relative scores can be studied using unsupervised learning techniques, such as clustering to identify patterns and group patients based on their movement characteristics. This approach could enable us to track the progress of healthy vs non-healthy individuals and provide a quantitative means for monitoring rehabilitation progress in patients with hand mobility issues.
+1. With more data, these relative scores can be analyzed using unsupervised learning techniques, such as clustering, to uncover patterns and group patients based on their movement characteristics. This approach could help us track the progress of healthy versus non-healthy individuals and monitor rehabilitation progress in patients with mobility impairments.
 2. We can introduce the z-depth of hand landmarks to capture additional spatial information. 
 3. Hand landmark features can be trained as a binary classification problem --- stroke vs non-stroke --- using deep learning models. 
 
