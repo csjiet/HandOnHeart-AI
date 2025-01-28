@@ -88,7 +88,7 @@ $\textbf{Assume both hands are in frame}$
 
 $\text{Let } N \text{ be the total number of frames in a video feed.}$
 
-#### "Average Movement Deviation" $m(\delta)$
+#### "Average Movement Deviation" $m(\tilde{\delta_{i}})$
 
 $\text{We compute the arithmetic mean of the L2 norms for each hand landmark across all consecutive frames.}$
 
