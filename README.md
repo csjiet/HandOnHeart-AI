@@ -2,7 +2,7 @@
 
 ## Overview
 
-This project extracts simple features from video to analyze differences in hand movements between stroke and non-stroke patients. By utilizing pre-trained foundational models, such as Mediapipe’s hand tracking and the SAM2 image segmentation model, we obtain key data features that form the basis for more advanced analyses of hand motion characteristics.
+This project extracts simple features from video to analyze differences in hand movements between stroke and non-stroke patients. By leveraging pre-trained foundational models, such as Mediapipe’s hand tracking and the SAM2 image segmentation model, we derive key data features that form the foundation for analyzing hand motion characteristics.
 
 ![pipeline](pipeline.png)
 
