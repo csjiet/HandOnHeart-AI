@@ -88,7 +88,7 @@ $\textbf{Assume both hands are in frame}$
 
 $\text{Let } N \text{ be the total number of frames in a video feed.}$
 
-#### "Average Movement Deviation" $m(\tilde{\delta_{i}})$
+#### "Average Movement Deviation" $m(\delta_{i})$
 
 $\text{We compute the arithmetic mean of the L2 norms for each hand landmark across all consecutive frames.}$
 
@@ -97,10 +97,10 @@ $\text{Let } i \text{ be the index to the Cartesian coordinates of a specific ha
 
 $\quad \text{(e.g., Landmark 0 }, h(V[t])[0] \text{ corresponds to the "left wrist" at video frame, } t \text{), and}$
 
-$\quad \tilde{\delta}_{i} \text{ be a random variable representing the deviation of the } i\text{-th hand landmark across successive frames.}$
+$\quad \text{let } \delta_{i} \text{ be the deviation of the } i\text{-th hand landmark across successive frames.}$
 
 $$
-m(\tilde{\delta_{i}}) = \frac{\sum_{t=1}^{N-1} \lVert h(V[t])[i] - h(V[t+1])[i] \rVert_{2}}{N-1}, \quad \forall i
+m(\delta_{i}) = \frac{\sum_{t=1}^{N-1} \lVert h(V[t])[i] - h(V[t+1])[i] \rVert_{2}}{N-1}, \quad \forall i
 $$
 
 $(N-1 \text{ because of consecutive frame intervals})$
@@ -108,13 +108,13 @@ $(N-1 \text{ because of consecutive frame intervals})$
 $\text{This computation yields a tuple of mean deviations for each hand landmark:}$
 
 $$
-(m(\tilde{\delta}_1), m(\tilde{\delta}_2), \dots , m(\tilde{\delta}_n)) \text{ where } n = 21 \times 2
+(m(\delta_1), m(\delta_2), \dots , m(\delta_n)) \text{ where } n = 21 \times 2
 $$
 
 $\text{Then, we can define the final expression score as:}$
 
 $$
-\text{ExprScore} = \sum_{i=1}^{21 \times 2} m(\tilde{\delta}_i).
+\text{ExprScore} = \sum_{i=1}^{21 \times 2} m(\delta_i).
 $$
 
 
