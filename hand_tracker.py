@@ -49,10 +49,10 @@ def slice_video_to_frames(video_path, output_dir):
 
     ffmpeg_command = [
         "ffmpeg",
-        "-i", video_path,  # Input video path
-        "-q:v", "2",       # High-quality frames
+        "-i", video_path,  
+        "-q:v", "2",      
         "-start_number", "0",  # Start numbering frames from 0
-        os.path.join(output_dir, "%05d.jpg")  # Output frame format
+        os.path.join(output_dir, "%05d.jpg") 
     ]
 
     try:
@@ -118,7 +118,7 @@ def save_segmented_video(video_segments, frame_names, video_dir, output_dir):
                 blended_region = cv2.addWeighted(frame, 0.5, colored_mask, 0.8, 0)
                 frame[mask > 0] = blended_region[mask > 0]  # Replace only the segmented pixels
 
-        # Save the processed frame
+        # save the processed frame
         output_frame_path = os.path.join(output_dir, f"{frame_idx:05d}.jpg")
         cv2.imwrite(output_frame_path, cv2.cvtColor(frame, cv2.COLOR_RGB2BGR))
 
@@ -178,7 +178,7 @@ def sam2_interface(cartesian_dp, frame_name, video_dir, index, radius=50, grid_s
     grid_points = np.array(np.meshgrid(x_coords, y_coords)).T.reshape(-1, 2)
 
     # Calculate distances from each grid point to all positive points
-    hand_points = np.array(cartesian_dp)  # Positive points from Mediapipe landmarks
+    hand_points = np.array(cartesian_dp)  
     distances = np.linalg.norm(grid_points[:, None, :] - hand_points[None, :, :], axis=2)
 
     # Filter grid points based on the distance threshold
@@ -301,9 +301,9 @@ def mediapipe_inference(VIDEO_DIR, file, selected_landmarks):
     mp_drawing_styles = mp.solutions.drawing_styles
 
     # Load the image
-    if os.path.isabs(file):  # If `file` is an absolute path, use it directly
+    if os.path.isabs(file):  
         image_path = file
-    else:  # Otherwise, combine `VIDEO_DIR` and `file`
+    else:  
         image_path = os.path.join(VIDEO_DIR, file)
 
     print(f"Loading image from: {image_path}")
@@ -325,11 +325,11 @@ def mediapipe_inference(VIDEO_DIR, file, selected_landmarks):
     results = hands.process(image_rgb)
     annotated_image = image.copy()
 
-    # Draw hand landmarks if detected
+    # draw hand landmarks if detected
     left_hand_landmarks = []
     right_hand_landmarks = []
     all_hand_landmarks = []  # To store all hand landmark coordinates
-    row_data = {}  # To store a row of data for the current frame
+    row_data = {}  
 
     if results.multi_hand_landmarks:
         for hand_idx, hand_landmarks in enumerate(results.multi_hand_landmarks):
@@ -362,7 +362,7 @@ def mediapipe_inference(VIDEO_DIR, file, selected_landmarks):
 
     all_hand_landmarks = left_hand_landmarks + right_hand_landmarks
 
-    # Release the model resources
+    # release the model resources
     hands.close()
 
     return all_hand_landmarks, annotated_image, row_data
@@ -371,19 +371,17 @@ def mediapipe_inference(VIDEO_DIR, file, selected_landmarks):
 def mediapipe_inference2(VIDEO_DIR, file, selected_landmarks):
     holistic_model = initialize_holistic_model()
 
-    if os.path.isabs(file):  # If `file` is an absolute path, use it directly
+    if os.path.isabs(file):  
         image_path = file
-    else:  # Otherwise, combine `VIDEO_DIR` and `file`
+    else:  
         image_path = os.path.join(VIDEO_DIR, file)
     
-    # Debugging: Print the image path
     print(f"Loading image from: {image_path}")
     image = cv2.imread(image_path)
     if image is None:
         raise FileNotFoundError(f"Image could not be loaded. Check the file path: {image_path}")
     image_height, image_width, _ = image.shape
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-    # image = cv2.resize(image, (640, 640))  # Standard size
 
     image_height, image_width, _ = image.shape
 
@@ -418,8 +416,8 @@ def mediapipe_inference2(VIDEO_DIR, file, selected_landmarks):
     
     left_hand_landmarks = []
     right_hand_landmarks = []
-    all_hand_landmarks = []  # To store all hand landmark coordinates
-    row_data = {}  # To store a row of data for the current frame
+    all_hand_landmarks = []  # To store all hand landmark coords
+    row_data = {}  # store a row of data for the current frame
 
     for hand_label, hand_landmarks in zip(["rh", "lh"], [results.right_hand_landmarks, results.left_hand_landmarks]):
         if hand_landmarks:
@@ -430,7 +428,7 @@ def mediapipe_inference2(VIDEO_DIR, file, selected_landmarks):
                     y_pixel = int(landmark.y * image_height)
 
                     landmark_name = CopyHandLandmark(idx).name
-                    col_name = f"{hand_label}_{landmark_name}"  # Prefix with hand label
+                    col_name = f"{hand_label}_{landmark_name}"  # prefix with hand label
                     row_data[col_name] = (x_pixel, y_pixel)
 
                     #print(hand_landmarks)
@@ -457,8 +455,8 @@ def extract_hand_features(video_dir, selected_landmarks, output_csv="./hand_feat
     holistic_model = None
 
     try:
-        # Initialize Mediapipe Holistic model
-        holistic_model = initialize_holistic_model()
+        # Initialize Mediapipe model
+        holistic_model = initialize_hand_model()
 
         # Get all frame filenames
         frame_names = [
@@ -478,15 +476,15 @@ def extract_hand_features(video_dir, selected_landmarks, output_csv="./hand_feat
 
                 # Extract features for the current frame
                 _, _, row_data = mediapipe_inference(video_dir, file, selected_landmarks)
-                row_data["frame"] = file  # Add frame identifier
+                row_data["frame"] = file  
                 hand_features.append(row_data)
 
             # Save batch data to CSV
             if hand_features:
                 pd.DataFrame(hand_features).to_csv(output_csv, mode='a', header=not os.path.exists(output_csv), index=False)
-                hand_features.clear()  # Clear memory after writing
+                hand_features.clear()  # clear memory after writing
 
-                # Force garbage collection
+                # garbage collection
                 gc.collect()
 
         print(f"Hand features successfully saved to {output_csv}")
@@ -495,68 +493,66 @@ def extract_hand_features(video_dir, selected_landmarks, output_csv="./hand_feat
         print(f"An error occurred: {e}")
 
     finally:
-        # Ensure the model is closed properly
         if holistic_model:
             holistic_model.close()
 
 def heatmap_kde(df, image_path="./video_frames/non_stroke_frames/00000.jpg"):
-    # Load and clean data
-    # df = pd.read_csv(file_path)
     df = df.dropna()
 
     def converter_func1(val):
-        if isinstance(val, str):  # Check if the value is a string
+        if isinstance(val, str): 
             coord_tuple = tuple(map(int, val.strip("()").split(",")))
             return np.array(coord_tuple)
-
-    all_coordinates = []
+    
     for col in df.columns:
         if col != "frame":
-            df[col] = df[col].apply(converter_func1)  # Apply conversion function
-            all_coordinates.extend(df[col].dropna().values)
+            df[col] = df[col].apply(converter_func1)
 
-    coordinates_2d = np.array(all_coordinates)
+    # extract landmark coord
+    all_coordinates = []
+    landmark_columns = [col for col in df.columns if col != "frame"]
+    for col in landmark_columns:
+        landmark_coords = np.array(df[col].tolist())  
+        all_coordinates.extend(landmark_coords)  # collect all coordinates into a single list
 
-    # Load the image using OpenCV
+    coordinates_2d = np.array(all_coordinates)  
+    coord_2d = coordinates_2d.T  
+
+    if coord_2d.shape[0] != 2:
+        raise ValueError("Coordinate data is not in the expected format (2, n).")
+
+    # Read the image
     image = cv2.imread(image_path)
     if image is None:
         raise FileNotFoundError(f"Image at path {image_path} could not be loaded.")
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)  # Convert to RGB
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     image_height, image_width, _ = image.shape
 
-    coord_2d = coordinates_2d.T
+    # 2D KDE
+    kde = gaussian_kde(coord_2d)  
     x_coords, y_coords = coord_2d[0], coord_2d[1]
 
-    # 2D KDE
-    kde = gaussian_kde(coord_2d)
-    xmin, xmax = x_coords.min(), x_coords.max()
-    ymin, ymax = y_coords.min(), y_coords.max()
-
-    # Create grid for KDE
-    x_grid, y_grid = np.meshgrid(np.linspace(xmin, xmax, 100), np.linspace(ymin, ymax, 100))
+    # Create grid for the 3DKDE
+    x_grid, y_grid = np.meshgrid(
+        np.linspace(0, image_width, 100),  
+        np.linspace(0, image_height, 100) 
+    )
     positions = np.vstack([x_grid.ravel(), y_grid.ravel()])
     z_grid = kde(positions).reshape(x_grid.shape)
 
     # 3D KDE Plot
-    fig = plt.figure(figsize=(9, 7))
+    fig = plt.figure(figsize=(9, 6))
     ax = fig.add_subplot(111, projection="3d")
     z_scale = 1
     z_grid_scaled = z_grid * z_scale
 
-    ax.plot_surface(
-        x_grid,
-        y_grid,
-        z_grid_scaled,
-        cmap="PuOr",
-        edgecolor="none",
-        alpha=0.6,
-        antialiased=True,
+    # Overlay the original image on the 3D plot without resizing
+    # flipped_image = cv2.flip(image, 0) / 255.0  # flip the image 
+    normalized_image = image / 255.0  
+    x_img, y_img = np.meshgrid(
+        np.linspace(0, image_width, normalized_image.shape[1]),
+        np.linspace(0, image_height, normalized_image.shape[0])
     )
-
-    image_array = cv2.resize(image, (80, 80)) / 255.0
-    x_img = np.linspace(xmin, xmax, 80)
-    y_img = np.linspace(ymin, ymax, 80)
-    x_img, y_img = np.meshgrid(x_img, y_img)
 
     ax.plot_surface(
         x_img,
@@ -564,46 +560,61 @@ def heatmap_kde(df, image_path="./video_frames/non_stroke_frames/00000.jpg"):
         np.zeros_like(x_img),  # z=0
         rstride=1,
         cstride=1,
-        facecolors=image_array,
+        facecolors=normalized_image,
         shade=False,
-        alpha=0.8,
+        alpha=0.1,  
     )
 
-    ax.set_xlim(xmin, xmax)
-    ax.set_ylim(ymin, ymax)
+    ax.plot_surface(
+        x_grid,
+        y_grid,
+        z_grid_scaled,
+        cmap="PuOr",
+        edgecolor="none",
+        alpha=0.8,
+        antialiased=True,
+    )
+
+    ax.set_xlim(0, image_width)
+    ax.set_ylim(image_height, 0)  
     ax.set_zlim(z_grid.min(), z_grid.max())
     ax.set_xlabel("x")
     ax.set_ylabel("y")
-    ax.set_zlabel("kernel density estimate")
-    ax.set_title("KDE heatmap (3D)")
+    ax.set_zlabel("Kernel Density Estimate")
+    ax.set_title("KDE Heatmap (3D)")
 
     # 2D KDE Plot
-    fig, ax = plt.subplots(figsize=(9, 7))
-    flipped_image = cv2.flip(image, 0)  # Flip vertically for proper alignment
-    ax.imshow(
-        flipped_image,
-        extent=(xmin, xmax, ymin, ymax),
-        origin="lower",
-        alpha=0.8,
-    )
+    fig, ax = plt.subplots(figsize=(9, 6))
+
+    ax.imshow(image, extent=(0, image_width, image_height, 0), origin="upper")
+
     heatmap = ax.imshow(
         z_grid,
-        extent=(xmin, xmax, ymin, ymax),
+        extent=(0, image_width, 0, image_height),  
         origin="lower",
         cmap="PuOr",
         alpha=0.7,
     )
+
+    # scatter point to visualize landmarks
+    # ax.scatter(x_coords, y_coords, color="red", s=5)
+
+    # add colorbar for KDE
     fig.colorbar(heatmap, ax=ax, label="Density")
-    ax.set_xlim(xmin, xmax)
-    ax.set_ylim(ymin, ymax)
+
+    ax.set_xlim(0, image_width)
+    ax.set_ylim(image_height, 0)  
     ax.set_xlabel("x")
     ax.set_ylabel("y")
-    ax.set_title("KDE heatmap (2D)")
+    ax.set_title("KDE Heatmap (2D)")
 
     plt.show()
 
+# test heatmap
+# df = pd.read_csv("./non_stroke_hand_features.csv")
+# heatmap_kde(df)
+
 def plot_hand_motion(df, image_path="./video_frames/non_stroke_frames/00000.jpg"):
-    # Clean and validate data
     df = df.dropna()
 
     def converter_func1(val):
@@ -639,6 +650,7 @@ def plot_hand_motion(df, image_path="./video_frames/non_stroke_frames/00000.jpg"
         y_coords = landmark_coords[:, 1]
 
         ax.plot(x_coords, y_coords, label=col, color=colors(i), linewidth=1.5)
+
         # Mark first point with a unique marker
         ax.scatter(
             x_coords[0], y_coords[0], 
@@ -653,14 +665,14 @@ def plot_hand_motion(df, image_path="./video_frames/non_stroke_frames/00000.jpg"
     ax.legend(
         title="Landmarks", 
         loc="upper center", 
-        bbox_to_anchor=(0.5, -0.12),  # Push the legend below the plot
+        bbox_to_anchor=(0.5, -0.12),
         fontsize="x-small", 
         title_fontsize="small", 
-        ncol=5,  # Number of columns in the legend
-        frameon=False  # Remove legend border
+        ncol=5,  
+        frameon=False  
     )
 
     # Add padding to prevent overlap of legend and x-label
-    plt.subplots_adjust(bottom=0.3)  # Increase bottom margin to make space for legend
+    plt.subplots_adjust(bottom=0.3)  
     plt.tight_layout()
     plt.show()
